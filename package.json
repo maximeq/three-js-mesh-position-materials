@@ -1,14 +1,15 @@
 {
-  "name": "three-js-mesh-position-material",
+  "name": "three-js-mesh-position-materials",
   "version": "1.0.0",
-  "description": "Implements a MeshPositionMaterial for saving 3D positions into a texture.",
+  "description": "Implements a MeshWorldPositionMaterial and MeshViewPositionMaterial for saving 3D positions into a texture.",
   "main": "src/exports.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node build.js"
   },
   "dependencies": {
-    "three-full": "16.0.1"
+    "three-full": "16.0.1",
+    "three-js-rgba-packing": "1.0.0"
   },
   "devDependencies": {
     "fs-extra": "^7.0.1",
@@ -24,17 +25,16 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maximeq/three-js-mesh-position-material.git"
+    "url": "git+https://github.com/maximeq/three-js-mesh-position-materials.git"
   },
   "keywords": [
     "threejs"
   ],
-  "browser": "./dist/browser/three-js-mesh-world-normal-material.js",
+  "browser": "./dist/browser/three-js-mesh-position-materials.js",
   "author": "Maxime Quiblier <maximequiblier@gmail.com>",
   "license": "MIT",
-  "hash": "cbb66061ffd05bc5f6673756895b3f6f03e7202a",
   "bugs": {
-    "url": "https://github.com/maximeq/three-js-mesh-position-material/issues"
+    "url": "https://github.com/maximeq/three-js-mesh-position-materials/issues"
   },
-  "homepage": "https://github.com/maximeq/three-js-mesh-position-material#readme"
+  "homepage": "https://github.com/maximeq/three-js-mesh-position-materials#readme"
 }

@@ -6,8 +6,8 @@ var terser = require('rollup-plugin-terser').terser; // minify
 var prettier = require('rollup-plugin-prettier');
 
 // clean previous build
-fs.removeSync('/dist/browser/three-js-mesh-position-material.js')
-fs.removeSync('/dist/browser/three-js-mesh-position-material.min.js')
+fs.removeSync('/dist/browser/three-js-mesh-position-materials.js')
+fs.removeSync('/dist/browser/three-js-mesh-position-materials.min.js')
 
 async function build(inputOptions, outputOptions) {
     // create a bundle
@@ -27,13 +27,14 @@ async function build(inputOptions, outputOptions) {
 build({
     input: 'src/exports.js',
     plugins:  [ commonjs(), resolve() ],
-    external: [ 'three-full' ],
+    external: [ 'three-full', 'three-js-rgba-packing' ],
 }, {
     format: 'umd',
     name: 'THREEMeshPositionMaterial',
-    file: './dist/browser/three-js-mesh-position-material.js',
+    file: './dist/browser/three-js-mesh-position-materials.js',
     globals: {
-        'three-full' : 'THREE'
+        'three-full' : 'THREE',
+        'three-js-rgba-packing': 'THREERGBAPacking'
     }
 });
 
@@ -55,13 +56,14 @@ build({
           bracketSpacing:false
         })
     ],
-    external: [ 'three-full' ],
+    external: [ 'three-full', 'three-js-rgba-packing' ],
 }, {
     format: 'umd',
     name: 'THREEMeshPositionMaterial',
-    file: './dist/browser/three-js-mesh-position-material.min.js',
+    file: './dist/browser/three-js-mesh-position-materials.min.js',
     globals: {
-        'three-full' : 'THREE'
+        'three-full' : 'THREE',
+        'three-js-rgba-packing': 'THREERGBAPacking'
     }
 });
 

@@ -9,7 +9,7 @@ export default {
         file: './dist/browser/three-js-mesh-position-material.js',
         format: 'cjs'
     },
-    external: ['three-full'],
+    external: ['three-full', 'three-js-rgba-packing'],
     plugins: [
         commonjs(), // require
         resolve(), // modules from node_modules
