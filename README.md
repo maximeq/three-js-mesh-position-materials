@@ -1,9 +1,8 @@
-# three-js-mesh-position-material
-Materials for a standard mesh to save rendered positions in a float texture.
+# Mesh Position Material for THREE.JS
+
+Materials for a standard mesh to save rendered positions in a float texture, or pack view positions in RGBA.
 
 TODO :
-  - Write a ShaderMaterial using THREE.ShaderChunk to support all THREE features in vertex shader and export positions in fragment shader.
-  - Write an exemple rendering positions in a texture RenderTarget.
-     - Then use the rendered texture to pack view space X, Y and Z positions as RGBA values (ie 3 textures RenderTargets)
-     - Read those RBGA textures in a shader and compare the values with the position RenderTarget. This should give a black texture : read it on CPU and check its blackness.
-     - Read those RGBA on the CPU, unproject them and compare to raytraced values from the camera.
+  - Write an exemple rendering world positions in a texture RenderTarget 
+  - Also render View Positions in 3 RenderTargets
+  - Write a special shader to read world positions from float texture, read View positions from RGBA packed textures, unproject to get world position and compare the values pixel per pixel (green pixel if the value is approximately the same). 
