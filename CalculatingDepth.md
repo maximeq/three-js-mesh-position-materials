@@ -71,7 +71,6 @@ void main() {
     gl_Position = projection * view * model * vec4(position, 1.0);
 
     vglPosition = gl_Position;
-    depthData = gl_Position.zw;
 }
 
 
@@ -80,12 +79,12 @@ void main() {
 varying vec4 vglPosition;
 
 void main() {
-    float unnormalizedDepth = vglPosition.z / vglPosition.w; // == gl_FragCoord.z
+    float unnormalizedDepth = vglPosition.z / vglPosition.w;
 
     // Fragment depth is automatically computed, but can be modified in WebGL with the appropriate extension.
     gl_FragDepthEXT = ((gl_DepthRange.diff * unnormalizedDepth) + gl_DepthRange.near + gl_DepthRange.far) / 2.0;
     // gl_DepthRange is used to map the unnormalizedDepth to the defined depth range. Default is near = 0 and far = 1, which gives :
-    float depth = unnormalizedDepth / 2.0 + 0.5;
+    float depth = unnormalizedDepth / 2.0 + 0.5; // == gl_FragCoord.z
 }
 ```
 
