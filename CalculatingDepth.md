@@ -81,10 +81,11 @@ varying vec4 vglPosition;
 void main() {
     float unnormalizedDepth = vglPosition.z / vglPosition.w;
 
-    // Fragment depth is automatically computed, but can be modified in WebGL with the appropriate extension.
+    // Fragment depth is automatically computed, but can be modified in WebGL with the appropriate extension :
+    // Note that the default behavior is : gl_FragDepthEXT == gl_FragCoord.z
     gl_FragDepthEXT = ((gl_DepthRange.diff * unnormalizedDepth) + gl_DepthRange.near + gl_DepthRange.far) / 2.0;
     // gl_DepthRange is used to map the unnormalizedDepth to the defined depth range. Default is near = 0 and far = 1, which gives :
-    float depth = unnormalizedDepth / 2.0 + 0.5; // == gl_FragCoord.z
+    float depth = unnormalizedDepth / 2.0 + 0.5;
 }
 ```
 
