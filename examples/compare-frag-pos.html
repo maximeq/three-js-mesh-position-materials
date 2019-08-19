@@ -1,0 +1,238 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Compare gl_FragCoord and gl_Position coordinates</title>
+    <style>
+        body { margin: 0; }
+        canvas { width: 640px; height: 360px }
+    </style>
+</head>
+
+<body>
+    <script src="../node_modules/three-full/builds/Three.umd.min.js"></script>
+    <script>var THREE = THREE || Three;</script>
+    <script src="../node_modules/three-js-rgba-packing/dist/browser/three-js-rgba-packing.min.js"></script>
+
+    <script src="../dist/browser/three-js-mesh-position-materials.js"></script>
+
+    <script src="js/dat.gui.min.js"></script>
+    <script src="js/orbit.js"></script>
+
+    <script id="gl_Position-vertex-shader" type="x-shader/x-vertex">
+        varying vec2 z_Pos;
+
+        void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            z_Pos = gl_Position.zw;
+        }
+    </script>
+
+    <script id="gl_Position-fragment-shader" type="x-shader/x-fragment">
+        varying vec2 z_Pos;
+
+        void main() {
+            gl_FragColor = vec4(vec3(z_Pos.x/z_Pos.y * 0.5 + 0.5), 1.);
+        }
+    </script>
+
+    <script id="gl_FragCoord-vertex-shader" type="x-shader/x-vertex">
+        void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </script>
+
+    <script id="gl_FragCoord-fragment-shader" type="x-shader/x-vertex">
+        void main() {
+            gl_FragColor = vec4(vec3(gl_FragCoord.z * 1.0000), 1.);
+        }
+    </script>
+
+    <script id="compare-vertex-shader" type="x-shader/x-vertex">
+        varying vec2 vUv;
+
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </script>
+
+    <script id="compare-fragment-shader" type="x-shader/x-vertex">
+        varying vec2 vUv;
+        uniform sampler2D glPosition;
+        uniform sampler2D glFragCoord;
+        uniform float factor;
+
+        void main() {
+            float v = texture2D(glPosition, vUv).r - texture2D(glFragCoord, vUv).r;
+            gl_FragColor = vec4(vec3(factor * abs(v)), 1.);
+        }
+    </script>
+
+    <script id="display-vertex-shader" type="x-shader/x-vertex">
+        varying vec2 vUv;
+
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </script>
+
+    <script id="display-fragment-shader" type="x-shader/x-vertex">
+        varying vec2 vUv;
+        uniform sampler2D displayTexture;
+
+        void main() {
+            gl_FragColor = vec4(texture2D(displayTexture, vUv).rgb, 1.);
+        }
+    </script>
+
+    <script>
+        let renderer = new THREE.WebGLRenderer();
+
+        let size = new THREE.Vector2(window.innerWidth, window.innerHeight);
+        renderer.setSize(size.x, size.y);
+        renderer.setClearColor(0xaaaaaa);
+
+        document.body.appendChild(renderer.domElement);
+
+        let scene = new THREE.Scene();
+        let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.001, 150 );
+        // let camera = new THREE.OrthographicCamera(-5 * size.x / size.y, 5 * size.x / size.y, 5, -5, 0, 10);
+
+        let controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.rotateSpeed = 0.35;
+        controls.minZoom = 1;
+        camera.position.set(0, 0, 3);
+        
+        
+        // Auto resize
+        
+        let onWindowResize = function () {
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize( width, height );
+        };
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+        
+        // Scene setup
+
+        let mesh = new THREE.Mesh(
+            new THREE.TorusKnotBufferGeometry(1, 0.3, 200, 50),
+            new THREE.MeshPhysicalMaterial({metalness: 0.1, roughness: 0.3})
+        );
+        scene.add(mesh);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+
+        let light = new THREE.DirectionalLight(0xffffff, 0.8);
+        light.position.set(1, 1, 1);
+        scene.add(light);
+
+        
+
+        let glPositionMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.querySelector("#gl_Position-vertex-shader").textContent.trim(),
+            fragmentShader: document.querySelector("#gl_Position-fragment-shader").textContent.trim()
+        });
+
+        let glFragCoordMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.querySelector("#gl_FragCoord-vertex-shader").textContent.trim(),
+            fragmentShader: document.querySelector("#gl_FragCoord-fragment-shader").textContent.trim()
+        });
+
+        // mesh.material = glFragCoordMaterial;
+
+        
+        let glPositionRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        glPositionRenderTarget.texture.minFilter = THREE.NearestFilter;
+        glPositionRenderTarget.texture.magFilter = THREE.NearestFilter;
+        glPositionRenderTarget.texture.type = THREE.FloatType;
+        glPositionRenderTarget.overrideMaterial = glPositionMaterial;
+
+        let glFragCoordRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        glFragCoordRenderTarget.texture.minFilter = THREE.NearestFilter;
+        glFragCoordRenderTarget.texture.magFilter = THREE.NearestFilter;
+        glFragCoordRenderTarget.texture.type = THREE.FloatType;
+        glFragCoordRenderTarget.overrideMaterial = glFragCoordMaterial;
+
+        let compareMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.querySelector("#compare-vertex-shader").textContent.trim(),
+            fragmentShader: document.querySelector("#compare-fragment-shader").textContent.trim(),
+            uniforms: {
+                glPosition: { value: glPositionRenderTarget.texture },
+                glFragCoord: { value: glFragCoordRenderTarget.texture },
+                factor: { value: 100000.0 },
+            }
+        });
+        let compareRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        compareRenderTarget.texture.minFilter = THREE.NearestFilter;
+        compareRenderTarget.texture.magFilter = THREE.NearestFilter;
+        compareRenderTarget.texture.format = THREE.RGBFormat;
+        compareRenderTarget.overrideMaterial = compareMaterial;
+
+
+        let ppScene = new THREE.Scene();
+        let ppCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        let ppMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.querySelector("#display-vertex-shader").textContent.trim(),
+            fragmentShader: document.querySelector("#display-fragment-shader").textContent.trim(),
+            uniforms: {
+                displayTexture: { value: compareRenderTarget.texture }
+            }
+        });
+        ppScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), ppMaterial));
+
+
+        let animate = function ()
+        {
+            requestAnimationFrame(animate);
+
+            scene.overrideMaterial = glPositionMaterial;
+            renderer.render(scene, camera, glPositionRenderTarget, true);
+            scene.overrideMaterial = glFragCoordMaterial;
+            renderer.render(scene, camera, glFragCoordRenderTarget, true);
+            scene.overrideMaterial = null;
+
+            ppScene.overrideMaterial = compareMaterial;
+            renderer.render(ppScene, ppCamera, compareRenderTarget);
+            ppScene.overrideMaterial = null;
+            renderer.render(ppScene, ppCamera);
+        };
+
+        animate();
+
+
+        let options = { display: 'Compare', factor: 1.0 };
+        let gui = new dat.GUI();
+
+        let controller = gui.add(options, 'display', ['gl_Position', 'gl_FragCoord', 'Compare']);
+        controller.onChange((value) => {
+            switch (value) {
+                case 'gl_Position':
+                    ppMaterial.uniforms.displayTexture = {value: glPositionRenderTarget.texture};
+                    break;
+                case 'gl_FragCoord':
+                    ppMaterial.uniforms.displayTexture = {value: glFragCoordRenderTarget.texture};
+                    break;
+                default:
+                    ppMaterial.uniforms.displayTexture = {value: compareRenderTarget.texture};
+
+            }
+        });
+
+        controller = gui.add(options, 'factor', 0, 100000);
+        controller.onChange(v => {
+            compareMaterial.uniforms.factor = {value: v}
+        })
+        
+    </script>
+</body>
+
+</html>

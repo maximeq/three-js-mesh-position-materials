@@ -1,0 +1,96 @@
+<html>
+<head>
+	<title>Mesh Position Materials Examples</title>
+	<style>
+		body { margin: 0; display: flex; flex-direction: row; }
+
+		.links {
+			width: 20%;
+			height: 100vh;
+			text-align: left;
+			overflow-y: auto;
+		}
+
+		.links button {
+			display: inline-block;
+			width: 100%;
+			font: inherit;
+			color: #555555;
+			font-size: 1.2rem;
+			text-decoration: unset;
+			padding: 0.7rem 0.5rem;
+			border: none;
+			background-color: transparent;
+			text-align: left;
+			/* show a hand cursor on hover; some argue that we
+            should keep the default arrow cursor for buttons */
+			cursor: pointer;
+		}
+
+		.links button:hover {
+			background-color: #fafafa;
+			color: #049ef4;
+		}
+
+		.links .selected {
+			background-color: #d8e5f4;
+			color: #049ef4;
+		}
+
+		.frame {
+			position: relative;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: row;
+		}
+
+		#frame {
+			flex-grow: 1;
+			overflow: hidden;
+		}
+
+		#fullscreen {
+			position: absolute;
+			background-color: #fafafa;
+			padding: 0.5rem;
+			font-size: 1.1rem;
+			color: #3e4257;
+			text-decoration: unset;
+			border-radius: 0.5rem;
+			top: 10px;
+			left: 10px;
+			visibility: hidden;
+		}
+
+		#fullscreen:hover {
+			background-color: #dadada;
+			color: #049ef4;
+		}
+	</style>
+</head>
+<body>
+<div class="links">
+	<button onclick="setExample(this, 'compare-frag-pos')">Compare gl_FragPos and gl_Position coordinates</button>
+</div>
+
+<div class="frame">
+	<iframe id="frame" ></iframe>
+	<a id="fullscreen">Fullscreen</a>
+</div>
+
+<script>
+	let fullscreen = document.querySelector("a#fullscreen");
+	let iframe = document.querySelector("iframe#frame");
+	let selected;
+
+	function setExample(element, example) {
+		element.classList.add('selected');
+		if (selected) selected.classList.remove('selected');
+		selected = element;
+		iframe.setAttribute('src', `./${example}.html`);
+		fullscreen.style.visibility = 'visible';
+		fullscreen.setAttribute('href', `./${example}.html`);
+	}
+</script>
+</body>
+</html>
