@@ -1,5 +1,4 @@
 var THREE = require("three-full");
-const THREERGBAPacking = require("three-js-rgba-packing");
 
 /**
  * @author Maxime Quiblier / http://github.com/maximeq
@@ -8,9 +7,9 @@ const THREERGBAPacking = require("three-js-rgba-packing");
  *                                  The resulting coordinates will be stored in RGB components.
  *                                  If false (default), the coordinate to store must be defined by parameters.coordinate
  *                                  and will be packed in RGBA.
- * @param {string} coordinate x, y or z to choose which coordinate will be packed in RGBA. Values will be mapped from -1:1 to 0:0.5 since
- *                            RGBAPacking package does only provide methods to store in [0,1[ To recover the view coordinate, you need to do
- *                            x = 4*RGBAPacking.decodeUnitFloat32(rgba) - 1;
+ * @param {string} coordinate x, y or z to choose which coordinate will be packed in RGBA using THREE.JS packDepthToRGBA. Values will be mapped from -1:1 to 0:0.5 since
+ *                            depth packing does only provide methods to store in [0,1[ To recover the view coordinate, you need to do
+ *                            x = 4*unpackRGBAToDepth(rgba) - 1;
  */
 function MeshViewPositionMaterial( parameters ) {
     parameters = parameters || {};
@@ -49,12 +48,13 @@ function MeshViewPositionMaterial( parameters ) {
     ].join("\n");
 
     parameters.fragmentShader = [
+        "#include <packing>",
+        // packDepthToRGBA can only pack [0,1[ with 1.0 exluded
+        "#define packUnitFloat32ToRGBA packDepthToRGBA", // alias for better understanding
         "varying vec3 vViewPosition;",
-        parameters.useFloatTexture ?
-            "" : THREERGBAPacking.glslEncodeUnitFloat32 ,
         "void main() {",
             parameters.useFloatTexture ?
-                "gl_FragColor = vViewPosition;" : "gl_FragColor = encodeUnitFloat32((vViewPosition." + parameters.coordinate + " + 1.0) / 4.0);",
+                "gl_FragColor = vViewPosition;" : "gl_FragColor = packUnitFloat32ToRGBA((vViewPosition." + parameters.coordinate + " + 1.0) / 4.0);",
         "}",
     ].join("\n");
 

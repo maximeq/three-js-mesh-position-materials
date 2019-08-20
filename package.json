@@ -1,6 +1,6 @@
 {
   "name": "three-js-mesh-position-materials",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Implements a MeshWorldPositionMaterial, MeshViewPositionMaterial and native MeshRGBADepthMaterial for saving 3D positions into a texture.",
   "main": "src/exports.js",
   "scripts": {
@@ -8,8 +8,7 @@
     "build": "node build.js"
   },
   "dependencies": {
-    "three-full": "16.0.1",
-    "three-js-rgba-packing": "1.0.0"
+    "three-full": "16.0.1"
   },
   "devDependencies": {
     "fs-extra": "^7.0.1",

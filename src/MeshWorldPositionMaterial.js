@@ -21,7 +21,7 @@ function MeshWorldPositionMaterial( parameters ) {
         "#include <logdepthbuf_pars_vertex>",
         "#include <clipping_planes_pars_vertex>",
 
-        "varying vec3 vWorldPosition;",
+        "varying vec4 vWorldPosition;",
 
         "void main() {",
 
@@ -35,15 +35,15 @@ function MeshWorldPositionMaterial( parameters ) {
             "#include <logdepthbuf_vertex>",
             "#include <clipping_planes_vertex>",
 
-            "vec4 vWorldPosition = modelMatrix * vec4( transformed, 1.0 );",
+            "vWorldPosition = modelMatrix * vec4( transformed, 1.0 );",
 
         "}"
     ].join("\n");
 
     parameters.fragmentShader = [
-        "varying vec3 vWorldPosition;",
+        "varying vec4 vWorldPosition;",
         "void main() {",
-            "gl_FragColor = vec4(vWorldPosition,1.0);",
+            "gl_FragColor = vWorldPosition;",
         "}",
     ].join("\n");
 

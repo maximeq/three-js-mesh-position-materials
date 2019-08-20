@@ -1,10 +1,9 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('three-js-rgba-packing'), require('three-full')) :
-    typeof define === 'function' && define.amd ? define(['three-js-rgba-packing', 'three-full'], factory) :
-    (global.THREEMeshPositionMaterials = factory(global.THREERGBAPacking,global.THREE));
-}(this, (function (threeJsRgbaPacking,threeFull) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('three-full')) :
+    typeof define === 'function' && define.amd ? define(['three-full'], factory) :
+    (global.THREEMeshPositionMaterials = factory(global.THREE));
+}(this, (function (threeFull) { 'use strict';
 
-    threeJsRgbaPacking = threeJsRgbaPacking && threeJsRgbaPacking.hasOwnProperty('default') ? threeJsRgbaPacking['default'] : threeJsRgbaPacking;
     threeFull = threeFull && threeFull.hasOwnProperty('default') ? threeFull['default'] : threeFull;
 
     /**
@@ -28,7 +27,7 @@
             "#include <logdepthbuf_pars_vertex>",
             "#include <clipping_planes_pars_vertex>",
 
-            "varying vec3 vWorldPosition;",
+            "varying vec4 vWorldPosition;",
 
             "void main() {",
 
@@ -42,15 +41,15 @@
                 "#include <logdepthbuf_vertex>",
                 "#include <clipping_planes_vertex>",
 
-                "vec4 vWorldPosition = modelMatrix * vec4( transformed, 1.0 );",
+                "vWorldPosition = modelMatrix * vec4( transformed, 1.0 );",
 
             "}"
         ].join("\n");
 
         parameters.fragmentShader = [
-            "varying vec3 vWorldPosition;",
+            "varying vec4 vWorldPosition;",
             "void main() {",
-                "gl_FragColor = vec4(vWorldPosition,1.0);",
+                "gl_FragColor = vWorldPosition;",
             "}",
         ].join("\n");
 
@@ -84,9 +83,9 @@
      *                                  The resulting coordinates will be stored in RGB components.
      *                                  If false (default), the coordinate to store must be defined by parameters.coordinate
      *                                  and will be packed in RGBA.
-     * @param {string} coordinate x, y or z to choose which coordinate will be packed in RGBA. Values will be mapped from -1:1 to 0:0.5 since
-     *                            RGBAPacking package does only provide methods to store in [0,1[ To recover the view coordinate, you need to do
-     *                            x = 4*RGBAPacking.decodeUnitFloat32(rgba) - 1;
+     * @param {string} coordinate x, y or z to choose which coordinate will be packed in RGBA using THREE.JS packDepthToRGBA. Values will be mapped from -1:1 to 0:0.5 since
+     *                            depth packing does only provide methods to store in [0,1[ To recover the view coordinate, you need to do
+     *                            x = 4*unpackRGBAToDepth(rgba) - 1;
      */
     function MeshViewPositionMaterial( parameters ) {
         parameters = parameters || {};
@@ -125,12 +124,13 @@
         ].join("\n");
 
         parameters.fragmentShader = [
+            "#include <packing>",
+            // packDepthToRGBA can only pack [0,1[ with 1.0 exluded
+            "#define packUnitFloat32ToRGBA packDepthToRGBA", // alias for better understanding
             "varying vec3 vViewPosition;",
-            parameters.useFloatTexture ?
-                "" : threeJsRgbaPacking.glslEncodeUnitFloat32 ,
             "void main() {",
                 parameters.useFloatTexture ?
-                    "gl_FragColor = vViewPosition;" : "gl_FragColor = encodeUnitFloat32((vViewPosition." + parameters.coordinate + " + 1.0) / 4.0);",
+                    "gl_FragColor = vViewPosition;" : "gl_FragColor = packUnitFloat32ToRGBA((vViewPosition." + parameters.coordinate + " + 1.0) / 4.0);",
             "}",
         ].join("\n");
 
