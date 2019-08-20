@@ -43,7 +43,7 @@ function MeshWorldPositionMaterial( parameters ) {
     parameters.fragmentShader = [
         "varying vec3 vWorldPosition;",
         "void main() {",
-            "gl_FragColor = vWorldPosition;",
+            "gl_FragColor = vec4(vWorldPosition,1.0);",
         "}",
     ].join("\n");
 

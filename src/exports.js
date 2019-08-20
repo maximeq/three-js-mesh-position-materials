@@ -10,4 +10,4 @@ THREE.MeshPositionMaterials = {
     MeshRGBADepthMaterial: MeshRGBADepthMaterial
 };
 
-module.exports = MeshViewPositionMaterial;
+module.exports = THREE.MeshPositionMaterials;

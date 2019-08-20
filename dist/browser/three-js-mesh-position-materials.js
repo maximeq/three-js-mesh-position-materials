@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('three-js-rgba-packing'), require('three-full')) :
     typeof define === 'function' && define.amd ? define(['three-js-rgba-packing', 'three-full'], factory) :
-    (global.THREEMeshPositionMaterial = factory(global.THREERGBAPacking,global.THREE));
+    (global.THREEMeshPositionMaterials = factory(global.THREERGBAPacking,global.THREE));
 }(this, (function (threeJsRgbaPacking,threeFull) { 'use strict';
 
     threeJsRgbaPacking = threeJsRgbaPacking && threeJsRgbaPacking.hasOwnProperty('default') ? threeJsRgbaPacking['default'] : threeJsRgbaPacking;
@@ -50,7 +50,7 @@
         parameters.fragmentShader = [
             "varying vec3 vWorldPosition;",
             "void main() {",
-                "gl_FragColor = vWorldPosition;",
+                "gl_FragColor = vec4(vWorldPosition,1.0);",
             "}",
         ].join("\n");
 
@@ -182,7 +182,7 @@
         MeshRGBADepthMaterial: MeshRGBADepthMaterial_1
     };
 
-    var exports$1 = MeshViewPositionMaterial_1;
+    var exports$1 = threeFull.MeshPositionMaterials;
 
     return exports$1;
 

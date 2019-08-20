@@ -30,7 +30,7 @@ build({
     external: [ 'three-full', 'three-js-rgba-packing' ],
 }, {
     format: 'umd',
-    name: 'THREEMeshPositionMaterial',
+    name: 'THREEMeshPositionMaterials',
     file: './dist/browser/three-js-mesh-position-materials.js',
     globals: {
         'three-full' : 'THREE',
@@ -59,7 +59,7 @@ build({
     external: [ 'three-full', 'three-js-rgba-packing' ],
 }, {
     format: 'umd',
-    name: 'THREEMeshPositionMaterial',
+    name: 'THREEMeshPositionMaterials',
     file: './dist/browser/three-js-mesh-position-materials.min.js',
     globals: {
         'three-full' : 'THREE',
