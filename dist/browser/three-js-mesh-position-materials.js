@@ -1,11 +1,11 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('three-full'), require('three-js-rgba-packing')) :
-    typeof define === 'function' && define.amd ? define(['three-full', 'three-js-rgba-packing'], factory) :
-    (global.THREEMeshPositionMaterial = factory(global.THREE,global.THREERGBAPacking));
-}(this, (function (threeFull,threeJsRgbaPacking) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('three-js-rgba-packing'), require('three-full')) :
+    typeof define === 'function' && define.amd ? define(['three-js-rgba-packing', 'three-full'], factory) :
+    (global.THREEMeshPositionMaterial = factory(global.THREERGBAPacking,global.THREE));
+}(this, (function (threeJsRgbaPacking,threeFull) { 'use strict';
 
-    threeFull = threeFull && threeFull.hasOwnProperty('default') ? threeFull['default'] : threeFull;
     threeJsRgbaPacking = threeJsRgbaPacking && threeJsRgbaPacking.hasOwnProperty('default') ? threeJsRgbaPacking['default'] : threeJsRgbaPacking;
+    threeFull = threeFull && threeFull.hasOwnProperty('default') ? threeFull['default'] : threeFull;
 
     /**
      * @author Maxime Quiblier / http://github.com/maximeq
@@ -125,12 +125,12 @@
         ].join("\n");
 
         parameters.fragmentShader = [
-            "varying vec3 vWorldPosition;",
+            "varying vec3 vViewPosition;",
             parameters.useFloatTexture ?
                 "" : threeJsRgbaPacking.glslEncodeUnitFloat32 ,
             "void main() {",
                 parameters.useFloatTexture ?
-                    "gl_FragColor = vViewPosition;" : "gl_FragColor = encodeUnitFloat32(vWorldPosition." + parameters.coordinate + ");",
+                    "gl_FragColor = vViewPosition;" : "gl_FragColor = encodeUnitFloat32((vViewPosition." + parameters.coordinate + " + 1.0) / 4.0);",
             "}",
         ].join("\n");
 
@@ -157,9 +157,29 @@
 
     var MeshViewPositionMaterial_1 = MeshViewPositionMaterial;
 
+    /**
+     * @author Maxime Quiblier / http://github.com/maximeq
+     * Material packing depth as rgba values.
+     * It is basically just MeshDepthMaterial with depthPacking at THREE.RGBADepthPacking
+     */
+    function MeshRGBADepthMaterial( parameters ) {
+        parameters = parameters || {};
+        parameters.depthPacking = threeFull.RGBADepthPacking;
+
+    	threeFull.MeshDepthMaterial.call( this, parameters);
+
+    }
+    MeshRGBADepthMaterial.prototype = Object.create( threeFull.MeshDepthMaterial.prototype );
+    MeshRGBADepthMaterial.prototype.constructor = MeshRGBADepthMaterial;
+
+    threeFull.MeshRGBADepthMaterial = MeshRGBADepthMaterial;
+
+    var MeshRGBADepthMaterial_1 = MeshRGBADepthMaterial;
+
     threeFull.MeshPositionMaterials = {
         MeshWorldPositionMaterial: MeshWorldPositionMaterial_1,
-        MeshViewPositionMaterial: MeshViewPositionMaterial_1
+        MeshViewPositionMaterial: MeshViewPositionMaterial_1,
+        MeshRGBADepthMaterial: MeshRGBADepthMaterial_1
     };
 
     var exports$1 = MeshViewPositionMaterial_1;

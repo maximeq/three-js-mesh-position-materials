@@ -49,12 +49,12 @@ function MeshViewPositionMaterial( parameters ) {
     ].join("\n");
 
     parameters.fragmentShader = [
-        "varying vec3 vWorldPosition;",
+        "varying vec3 vViewPosition;",
         parameters.useFloatTexture ?
             "" : THREERGBAPacking.glslEncodeUnitFloat32 ,
         "void main() {",
             parameters.useFloatTexture ?
-                "gl_FragColor = vViewPosition;" : "gl_FragColor = encodeUnitFloat32(vWorldPosition." + parameters.coordinate + ");",
+                "gl_FragColor = vViewPosition;" : "gl_FragColor = encodeUnitFloat32((vViewPosition." + parameters.coordinate + " + 1.0) / 4.0);",
         "}",
     ].join("\n");
 
