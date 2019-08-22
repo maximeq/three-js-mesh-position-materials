@@ -76,10 +76,15 @@ void main() {
 
 // Fragement shader
 
+uniform mat4 inverseViewProjectionMatrix; // inverse( projectionMatrix * viewMatrix )
+
 varying vec4 vglPosition;
 
 void main() {
     float unnormalizedDepth = vglPosition.z / vglPosition.w;
+    
+    vec4 clipPos = vglPosition/vglPosition.w;
+    vec4 worldPos = inverseViewProjectionMatrix * clipPos;"
 
     // Fragment depth is automatically computed, but can be modified in WebGL with the appropriate extension :
     // Note that the default behavior is : gl_FragDepthEXT == gl_FragCoord.z
