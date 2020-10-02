@@ -12,7 +12,6 @@
 <body>
     <script src="../node_modules/three-full/builds/Three.umd.min.js"></script>
     <script>var THREE = THREE || Three;</script>
-    <script src="../node_modules/three-js-rgba-packing/dist/browser/three-js-rgba-packing.min.js"></script>
 
     <script src="../dist/browser/three-js-mesh-position-materials.js"></script>
 
@@ -106,10 +105,10 @@
         controls.rotateSpeed = 0.35;
         controls.minZoom = 1;
         camera.position.set(0, 0, 3);
-        
-        
+
+
         // Auto resize
-        
+
         let onWindowResize = function () {
             let width = window.innerWidth;
             let height = window.innerHeight;
@@ -120,7 +119,7 @@
 
         window.addEventListener( 'resize', onWindowResize, false );
 
-        
+
         // Scene setup
 
         let mesh = new THREE.Mesh(
@@ -135,7 +134,7 @@
         light.position.set(1, 1, 1);
         scene.add(light);
 
-        
+
 
         let glPositionMaterial = new THREE.ShaderMaterial({
             vertexShader: document.querySelector("#gl_Position-vertex-shader").textContent.trim(),
@@ -149,7 +148,6 @@
 
         // mesh.material = glFragCoordMaterial;
 
-        
         let glPositionRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
         glPositionRenderTarget.texture.minFilter = THREE.NearestFilter;
         glPositionRenderTarget.texture.magFilter = THREE.NearestFilter;
@@ -231,7 +229,7 @@
         controller.onChange(v => {
             compareMaterial.uniforms.factor = {value: v}
         })
-        
+
     </script>
 </body>
 
