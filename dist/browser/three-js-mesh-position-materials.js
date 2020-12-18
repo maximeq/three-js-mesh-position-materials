@@ -66,6 +66,8 @@
     	this.skinning = false;
     	this.morphTargets = false;
 
+        this.isMeshDepthMaterial = true;
+
     	threeFull.ShaderMaterial.call( this, parameters);
 
     }
@@ -146,6 +148,8 @@
 
     	this.skinning = false;
     	this.morphTargets = false;
+
+    	this.isMeshDepthMaterial = true;
 
     	threeFull.ShaderMaterial.call( this, parameters);
 

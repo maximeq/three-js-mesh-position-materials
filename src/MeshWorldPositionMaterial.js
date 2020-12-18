@@ -60,6 +60,8 @@ function MeshWorldPositionMaterial( parameters ) {
 	this.skinning = false;
 	this.morphTargets = false;
 
+    this.isMeshDepthMaterial = true;
+
 	THREE.ShaderMaterial.call( this, parameters);
 
 };
