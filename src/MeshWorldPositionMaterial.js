@@ -8,7 +8,7 @@ function MeshWorldPositionMaterial( parameters ) {
     parameters = parameters || {};
 
     parameters.uniforms = THREE.UniformsUtils.merge([
-      THREE.ShaderLib.displacementmap
+      THREE.ShaderLib.depth.uniforms
     ]);
     parameters.vertexShader = [
 

@@ -14,7 +14,7 @@
         parameters = parameters || {};
 
         parameters.uniforms = threeFull.UniformsUtils.merge([
-          threeFull.ShaderLib.displacementmap
+          threeFull.ShaderLib.depth.uniforms
         ]);
         parameters.vertexShader = [
 
@@ -91,7 +91,7 @@
         parameters = parameters || {};
 
         parameters.uniforms = threeFull.UniformsUtils.merge([
-          threeFull.ShaderLib.displacementmap
+          threeFull.ShaderLib.depth.uniforms
         ]);
         parameters.vertexShader = [
 
